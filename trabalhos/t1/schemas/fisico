@@ -1,0 +1,126 @@
+/* Lógico_1: */
+
+CREATE TABLE usuario (
+    email VARCHAR PRIMARY KEY,
+    nome VARCHAR,
+    foto VARCHAR,
+    nivel INTEGER
+);
+
+CREATE TABLE partida (
+    inicio TIMESTAMP,
+    fim TIMESTAMP,
+    pontos INTEGER,
+    id INTEGER PRIMARY KEY,
+    fk_modo_id INTEGER
+);
+
+CREATE TABLE pergunta (
+    texto VARCHAR,
+    imagem VARCHAR,
+    fk_categoria_id INTEGER,
+    id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE respostas (
+    texto VARCHAR,
+    imagem VARCHAR,
+    correta BOOLEAN,
+    id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE categoria (
+    id INTEGER PRIMARY KEY,
+    titulo VARCHAR,
+    icone VARCHAR
+);
+
+CREATE TABLE categoria_partida (
+    fk_categoria_id INTEGER,
+    fk_partida_id INTEGER
+);
+
+CREATE TABLE desafio (
+    inicio TIMESTAMP,
+    fk_partida_id INTEGER
+);
+
+CREATE TABLE ranking (
+    titulo VARCHAR,
+    id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE modo (
+    id INTEGER PRIMARY KEY,
+    nome VARCHAR,
+    timer INTEGER,
+    multiplicador FLOAT
+);
+
+CREATE TABLE follow (
+    email_seguidor VARCHAR,
+    email_seguido VARCHAR
+);
+
+CREATE TABLE participacao (
+    fk_usuario_email VARCHAR,
+    fk_partida_id INTEGER
+);
+
+CREATE TABLE usuario_ranking (
+    fk_ranking_id INTEGER,
+    fk_usuario_email VARCHAR
+);
+ 
+ALTER TABLE partida ADD CONSTRAINT FK_partida_2
+    FOREIGN KEY (fk_modo_id)
+    REFERENCES modo (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE pergunta ADD CONSTRAINT FK_pergunta_1
+    FOREIGN KEY (fk_categoria_id)
+    REFERENCES categoria (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE categoria_partida ADD CONSTRAINT FK_categoria_partida_1
+    FOREIGN KEY (fk_categoria_id)
+    REFERENCES categoria (id);
+ 
+ALTER TABLE categoria_partida ADD CONSTRAINT FK_categoria_partida_2
+    FOREIGN KEY (fk_partida_id)
+    REFERENCES partida (id);
+ 
+ALTER TABLE desafio ADD CONSTRAINT FK_desafio_1
+    FOREIGN KEY (fk_partida_id)
+    REFERENCES partida (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE follow ADD CONSTRAINT FK_follow_1
+    FOREIGN KEY (email_seguidor)
+    REFERENCES usuario (email)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE follow ADD CONSTRAINT FK_follow_2
+    FOREIGN KEY (email_seguido)
+    REFERENCES usuario (email)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE participacao ADD CONSTRAINT FK_participacao_1
+    FOREIGN KEY (fk_usuario_email)
+    REFERENCES usuario (email)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE participacao ADD CONSTRAINT FK_participacao_2
+    FOREIGN KEY (fk_partida_id)
+    REFERENCES partida (id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE usuario_ranking ADD CONSTRAINT FK_usuario_ranking_1
+    FOREIGN KEY (fk_ranking_id)
+    REFERENCES ranking (id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE usuario_ranking ADD CONSTRAINT FK_usuario_ranking_2
+    FOREIGN KEY (fk_usuario_email)
+    REFERENCES usuario (email)
+    ON DELETE SET NULL;
